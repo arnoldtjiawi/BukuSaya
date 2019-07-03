@@ -30,39 +30,7 @@ class ViewController: UIViewController {
         tableView.dataSource = self
         tableView.rowHeight = 313
     }
-
-    //MARK: - Menambah daftar buku
-    @IBAction func addBook(_ sender: UIBarButtonItem) {
-        //membuat alert controller
-        let alert = UIAlertController(title: "Judul Buku", message: "Masukan judul buku", preferredStyle: .alert)
-        
-        //membuat data sementara untuk author, category, and cover
-        let author = authors[Int.random(in: 0..<4)]
-        let category = categories[Int.random(in: 0..<4)]
-        let cover = covers[Int.random(in: 0..<4)]
-        
-        //mengatur text field di dalam alert
-        var textField = UITextField()
-        alert.addTextField { (field) in
-            field.placeholder = "Nama buku"
-            textField = field
-        }
-        
-        //TODO: - Adding title based on user input with dummy data
-        //mengatur tombol pada alert
-        alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (_) in
-            self.titles.append(textField.text ?? "")
-            self.authors.append(author)
-            self.categories.append(category)
-            self.covers.append(cover)
-            
-            //fungsi reloadData adalah untuk mengupdate perubahan yg ada pada table view
-            self.tableView.reloadData() //coba comment dan jalankan aplikasi. apa bedanya?
-        }))
-        
-        //present alert controller
-        self.present(alert, animated: true, completion: nil)
-    }
+    
 }
 
 //UITableViewDataSource = Protocol yg digunakan untuk mengatur seperti apa tampilan pada setiap barisnya beserta berapa jumlah baris yang ditampilkan
@@ -75,7 +43,7 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
     //TODO: - untuk menentukan jumlah baris yang ditampilkan dalam satu section (group/segment)
     //numberOfRowsInSection = index dari section
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return titles.count
+        return categories.count
     }
     
     //TODO: - untuk mengatur tampilan dalam 1 baris yang ada pada 1 section
@@ -84,9 +52,10 @@ extension ViewController: UITableViewDataSource, UITableViewDelegate {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "LibraryCell", for: indexPath) as? LibraryCell else {return UITableViewCell()}
         
         cell.bookCategory.text = categories[indexPath.row]
-        cell.bookCover.backgroundColor = covers[indexPath.row]
-        cell.bookTitle.text = titles[indexPath.row]
-        cell.bookAuthor.text = authors[indexPath.row]
+        cell.titles = titles
+        cell.covers = covers
+        cell.authors = authors
+        cell.setupCollectionView()
         
         return cell
     }
